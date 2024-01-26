@@ -42,9 +42,8 @@ class OpenAIClient:
     @retry.retry(tries=3, delay=2) 
     def get_sentiment_and_summary(self, query, formatted_summaries):
         
-        prompt = f"I am going to give you a list of {len(formatted_summaries)} statements about {query}. Please rate each statement on a scale of 1-10, where 1 is very negative and 10 is very positive. These are the statements separated by newlines: {formatted_summaries}"
-        
-        print("prompt:" + prompt)
+        prompt = f"I am going to give you a list of statements about {query}. Please rate each statement on a scale of 1-10, where 1 is very negative and 10 is very positive. These are the statements separated by newlines: {formatted_summaries}"
+        print("GPT-4 Chat Complete Prompt: " + prompt)
         
         response = self.client.chat.completions.create(
             model=self.MODEL,
@@ -57,6 +56,9 @@ class OpenAIClient:
             frequency_penalty=0,
             presence_penalty=0
         )
+        if response is None:
+            print("OpenAI API call failed")
+            return
         
         json_resp = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
         return json_resp["sentiment_score"], json_resp["sentiment_explanation"], json_resp["summary"]
