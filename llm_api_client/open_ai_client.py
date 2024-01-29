@@ -11,7 +11,7 @@ class OpenAIClient:
             "type": "function",
             "function": {
                 "name": "determine_sentiment",
-                "description": "Given a list of statements, determine the overall sentiment of the statements on a scale of 1-100, 100 being most positive and 1 being most negative. Provide an explanation for why you chose the rating. Also provide a summary of the statements in 100 words or less, focusing specifically on the most important chronological events and their dates in the statements.",
+                "description": "Given a list of statements, determine the overall sentiment towards the subject of the statements on a scale of 1-100, 100 being most positive and 1 being most negative. Provide an explanation for why you chose the rating. Also provide a summary of the statements in 100 words or less, focusing specifically on the most important chronological events and their dates in the statements.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -42,7 +42,7 @@ class OpenAIClient:
     @retry.retry(tries=3, delay=2) 
     def get_sentiment_and_summary(self, query, formatted_summaries):
         
-        prompt = f"I am going to give you a list of statements about {query}. Please rate each statement on a scale of 1-10, where 1 is very negative and 10 is very positive. These are the statements separated by newlines: {formatted_summaries}"
+        prompt = f"I am going to give you a list of statements about {query}. Please rate the statements on a scale of 1-100, where 1 is very negative towards {query} and 100 is very positive towards {query}. These are the statements separated by newlines: {formatted_summaries}"
         print("GPT-4 Chat Complete Prompt: " + prompt)
         
         response = self.client.chat.completions.create(
